@@ -12,6 +12,7 @@ class Driven_cavity_class:
 	Driving_intensity : float = 0.0	
 	g  : float= 0.5 
 	N_photons : int = 20 # Max number of excitations in the cavity - 1 
+	start_ground: bool = False 
 
 	sigma_minus : np.ndarray = field(init=False) 
 	sigma_plus : np.ndarray = field(init=False) 
@@ -39,7 +40,10 @@ class Driven_cavity_class:
 
 		initial_cav = np.zeros(self.N_photons,dtype=complex)   
 		initial_cav[0]=1 # zero photons in the initial state 
-		initial_emitter = np.array([1,0],dtype=complex) # one excitation in the initial state  
+		if self.start_ground:
+			initial_emitter = np.array([0,1],dtype=complex) # one excitation in the initial state  
+		else:
+			initial_emitter = np.array([1,0],dtype=complex) # one excitation in the initial state  
 		self.psi0 = np.kron(initial_emitter,initial_cav)
 
 
