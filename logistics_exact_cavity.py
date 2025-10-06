@@ -63,7 +63,7 @@ class Driven_cavity_class:
 
 @dataclass
 
-class two_cavities_qubit: 
+class two_modes_cavity: 
 	''' To be done: this class can substitute the previous one (Driven_cavity_class),
 	but there is no need to delete anything so far.  '''
 	omega_q : float = 1 
