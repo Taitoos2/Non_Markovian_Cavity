@@ -85,23 +85,14 @@ class new_cav_model:
 		while integrator.t<t_max:
 			
 			integrator.step()
-			
-			if integrator.status == 'failed':
-				print("Integrador falló en i =", i)
-				i = self.next_index
-				if i >= self.buffer_size:
-					''' resize arrays when necessary '''
-					self.buffer_size = int(self.buffer_size * 1.5)
-					self.t_array = np.resize(self.t_array, self.buffer_size)
-					self.s_array = np.resize(self.s_array, (self.buffer_size, 4))
-					self.a_out_array = np.resize(self.a_out_array, (self.buffer_size, 4))
 
-				self.t_array = self.t_array[:i] # in case the integration fails, I trim the arrays 
+			if integrator.status == 'failed':
+				print(f"⚠️ Integrador falló en t = {integrator.t:.3e}")
+				i = min(self.next_index, self.buffer_size)
+				self.t_array = self.t_array[:i]
 				self.s_array = self.s_array[:i]
-				self.a_out_array = self.a_out_array[:i]  
-			#	print(integrator.status + ' at: '+str(integrator.t))
-			#	print(self.next_index)
-			
+				self.a_out_array = self.a_out_array[:i]
+				return 
 			i = self.next_index
 			if i >= self.buffer_size:
 				''' resize arrays when necessary '''
@@ -143,3 +134,28 @@ def J_analytical_new(gamma,phi,tau,t):
 
         
     return result
+
+# --------------------- fourier transform --------------------------
+
+def fast_f_t(x : np.ndarray,y:np.ndarray, M:int = 500):
+
+	t_interp = np.linspace(0, x[-1], M)  
+	dt = t_interp[1] - t_interp[0]
+	y = np.interp(t_interp,np.real(x), np.real(y)) # i am forcing real values, this might not be correct, but currents should be real 
+	y -= np.mean(y)
+	k = np.linspace(0, 1 / dt, M + 1)[:-1]
+	yk = np.abs(np.fft.fft(y))
+	u = yk[: M // 2]
+	if np.sum(np.abs(u)) != 0:
+		return 2*np.pi*k[: M // 2], u / np.sum(np.abs(u))
+	else:
+		return 2*np.pi*k[: M // 2], u 
+
+def fourier_transform_matrix(t,m,M):
+	N = m.shape[-1]
+	w,u = fast_f_t(t,m[:,0],M)
+	result =np.zeros((w.shape[0],N),dtype=complex)
+	result[:,0] = u
+	for n in range(1,N):
+		_,result[:,n] = fast_f_t(t,m[:,n],M)
+	return w,result 
