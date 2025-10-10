@@ -115,6 +115,10 @@ class new_cav_model:
 		s = self.s_array.reshape(-1,2,2)
 		s_dag = np.conjugate(np.transpose(s,axes=(0,2,1)))
 		return self.t_array,np.abs(np.einsum('i,tik,tkj,j->t',np.conjugate(np.asarray(initial).T),s_dag,s,np.asarray(initial)))
+	def current(self,initial):
+		a=self.a_out_array.reshape(-1,2,2)
+		a_dag = np.conjugate(np.transpose(a,axes=(0,2,1)))
+		return self.t_array,np.abs(np.einsum('i,tik,tkj,j->t',np.conjugate(np.asarray(initial).T),a_dag,a,np.asarray(initial)))
 
 # ----------------- analytical solution single emitter ----------------------- 
 
