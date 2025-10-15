@@ -151,7 +151,7 @@ def fast_f_t(x : np.ndarray,y:np.ndarray, M:int = 500):
     yk = np.abs(np.fft.fft(y))
     u = yk[: M // 2]
     if np.sum(np.abs(u)) != 0:
-        return 2*np.pi*k[: M // 2], u / np.sum(np.abs(u))
+        return 2*np.pi*k[: M // 2], u    # normalization removed
     else:
         return 2*np.pi*k[: M // 2], u 
 
