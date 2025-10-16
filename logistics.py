@@ -141,7 +141,7 @@ def J_analytical_new(gamma,phi,tau,t):
 
 # --------------------- fourier transform --------------------------
 
-    def fast_f_t(x : np.ndarray,y:np.ndarray, M:int = 500):
+def fast_f_t(x : np.ndarray,y:np.ndarray, M:int = 500):
 
         t_interp = np.linspace(0, x[-1], M)  
         dt = t_interp[1] - t_interp[0]
