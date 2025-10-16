@@ -141,19 +141,19 @@ def J_analytical_new(gamma,phi,tau,t):
 
 # --------------------- fourier transform --------------------------
 
-def fast_f_t(x : np.ndarray,y:np.ndarray, M:int = 500):
+    def fast_f_t(x : np.ndarray,y:np.ndarray, M:int = 500):
 
-    t_interp = np.linspace(0, x[-1], M)  
-    dt = t_interp[1] - t_interp[0]
-    y = np.interp(t_interp,np.real(x), np.real(y)) # i am forcing real values, this might not be correct, but currents should be real 
-    y -= np.mean(y)
-    k = np.linspace(0, 1 / dt, M + 1)[:-1]
-    yk = np.abs(np.fft.fft(y))
-    u = yk[: M // 2]
-    if np.sum(np.abs(u)) != 0:
-        return 2*np.pi*k[: M // 2], u    # normalization removed
-    else:
-        return 2*np.pi*k[: M // 2], u 
+        t_interp = np.linspace(0, x[-1], M)  
+        dt = t_interp[1] - t_interp[0]
+        y = np.interp(t_interp,np.real(x), np.real(y)) # i am forcing real values, this might not be correct, but currents should be real 
+        y -= np.mean(y)
+        k = np.linspace(0, 1 / dt, M + 1)[:-1]
+        yk = np.abs(np.fft.fft(y))
+        u = yk[: M // 2]
+        if np.sum(np.abs(u)) != 0:
+            return 2*np.pi*k[: M // 2], u    # normalization removed
+        else:
+            return 2*np.pi*k[: M // 2], u 
 
 def fourier_transform_matrix(t,m,M):
     N = m.shape[-1]
